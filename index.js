@@ -1,11 +1,13 @@
 // Require the necessary discord.js classes
-const fs = require('node:fs')
-const path = require('node:path')
+const fs = require('fs')
+const path = require('path')
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
 // Create a new client instance
-const client = new Client({ intents: [GatewayIntentBits.Guilds] });
+const client = new Client({
+	intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages]}
+);
 
 client.commands = new Collection()
 
@@ -34,6 +36,16 @@ client.once(Events.ClientReady, readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
+// when pinged in a reply, accuse the replied message of taking our position and delete the message with the ping
+client.on(Events.MessageCreate, async message => {
+	if (message.reference === null || message.reference === undefined) return;
+	let refMessage = await message.fetchReference();
+	if (refMessage.author.bot || message.author.bot) return;
+	await refMessage.reply('How dare you lay claim to my position??? I am the **true** Judge of Hell!')
+	await message.delete()
+	console.log('did the funny')
+})
+
 client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return;
 
@@ -58,3 +70,6 @@ client.on(Events.InteractionCreate, async interaction => {
 
 // Log in to Discord with your client's token
 client.login(token);
+
+// flavor text for status
+//client.user.setActivity('with human souls');
