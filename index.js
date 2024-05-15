@@ -1,12 +1,19 @@
 // Require the necessary discord.js classes
 const fs = require('fs')
 const path = require('path')
-const { ActivityType, Client, Collection, Events } = require('discord.js');
+const { ActivityType, Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const { token } = require('./config.json');
 
 // Create a new client instance
-// calculate intents number at https://discord-intents-calculator.vercel.app
-const client = new Client({intents: 34307});
+const client = new Client({
+	intents: [
+		GatewayIntentBits.Guilds,
+		GatewayIntentBits.GuildMessages,
+		GatewayIntentBits.GuildMessageReactions,
+		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildEmojisAndStickers
+	],
+});
 
 let programStartTime = new Date(Date.now()).toLocaleString('sv-SE');
 
@@ -59,7 +66,7 @@ for (const folder of commandFolders) {
 // When the client is ready, run this code (only once).
 // The distinction between `client: Client<boolean>` and `readyClient: Client<true>` is important for TypeScript developers.
 // It makes some properties non-nullable.
-client.once(Events.ClientReady, readyClient => {
+client.once(Events.ClientReady, async readyClient => {
 	console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 	// flavor text for status
 	client.user.setActivity('with human souls', { type: ActivityType.Playing });
@@ -70,10 +77,11 @@ msgReplyPairs.set('circus', 'im still sad about gummigoo =(');
 msgReplyPairs.set('outer wilds', 'HOLY SHIT I LOVE OUTER WILDS');
 // when pinged or in a reply, accuse the replied message of taking our position and delete the message with the ping
 client.on('messageCreate', async message => {
-	// store message content
-	let originalContent = message.content;
 	// stop the infinite loop
 	if (message.author.bot) return;
+	// store message content
+	let originalContent = message.content;
+
 	// test all the strings
 	for (let [key, value] of msgReplyPairs.entries()) {
 		if (originalContent.includes(key)) {
@@ -81,6 +89,16 @@ client.on('messageCreate', async message => {
 				await message.reply(value);
 				return;
 			}
+		}
+	}
+});
+
+// do the thing with emojis
+const vipChannel = client.channels.cache.get('1232569826287812660');
+client.on(Events.MessageReactionAdd,  reaction => {
+	if ('1220249755939110952' === reaction.emoji.identifier || '1218807773127512106' === reaction.emoji.identifier) {
+		if (reaction.count === 7) {
+			vipChannel.send(reaction.message);
 		}
 	}
 });
