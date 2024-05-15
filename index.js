@@ -1,7 +1,7 @@
 // Require the necessary discord.js classes
 const fs = require('fs')
 const path = require('path')
-const { ActivityType, Client, Collection, Events, GatewayIntentsBits } = require('discord.js');
+const { ActivityType, Client, Collection, Events } = require('discord.js');
 const { token } = require('./config.json');
 
 // Create a new client instance
@@ -69,8 +69,7 @@ msgReplyPairs.set('helldiver', 'omg isn\'t that like deep rock galactic but with
 msgReplyPairs.set('circus', 'im still sad about gummigoo =(');
 msgReplyPairs.set('outer wilds', 'HOLY SHIT I LOVE OUTER WILDS');
 // when pinged or in a reply, accuse the replied message of taking our position and delete the message with the ping
-client.on('message', async message => {
-	if (message.reference === null || message.reference === undefined) return;
+client.on('messageCreate', async message => {
 	// store message content
 	let originalContent = message.content;
 	// stop the infinite loop
@@ -78,8 +77,10 @@ client.on('message', async message => {
 	// test all the strings
 	for (let [key, value] of msgReplyPairs.entries()) {
 		if (originalContent.includes(key)) {
-			await message.reply(value);
-			return;
+			if (Math.random() < 0.1) {
+				await message.reply(value);
+				return;
+			}
 		}
 	}
 });
