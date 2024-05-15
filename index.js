@@ -77,7 +77,7 @@ client.on('messageCreate', async message => {
 	// test all the strings
 	for (let [key, value] of msgReplyPairs.entries()) {
 		if (originalContent.includes(key)) {
-			if (Math.random() < 0.1) {
+			if (Math.random() < 0.4) {
 				await message.reply(value);
 				return;
 			}
