@@ -80,12 +80,12 @@ client.on('messageCreate', async message => {
 
 	for (let [key, value] of msgReplyPairs.entries()) {
 		if (originalContent.includes(key)) {
-			if (Math.random() < 0.1) {
+			if (Math.random() < 0.8) {
 				await message.reply(value);
 				return;
 			}
 		} else if (referredContent.includes(key)) {
-			if (Math.random() < 0.1) {
+			if (Math.random() < 0.8) {
 				await referredMessage.reply(value);
 				return;
 			}
