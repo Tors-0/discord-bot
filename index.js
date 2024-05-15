@@ -65,33 +65,24 @@ client.once(Events.ClientReady, readyClient => {
 	client.user.setActivity('with human souls', { type: ActivityType.Playing });
 });
 let msgReplyPairs = new Map();
-msgReplyPairs.set('helldivers', 'omg isn\'t that like deep rock galactic but with bigger bugs?');
-msgReplyPairs.set('digital circus', 'im still sad about gummigoo =(');
+msgReplyPairs.set('helldiver', 'omg isn\'t that like deep rock galactic but with bigger bugs?');
+msgReplyPairs.set('circus', 'im still sad about gummigoo =(');
 msgReplyPairs.set('outer wilds', 'HOLY SHIT I LOVE OUTER WILDS');
 // when pinged or in a reply, accuse the replied message of taking our position and delete the message with the ping
-client.on('messageCreate', async message => {
+client.on('message', async message => {
 	if (message.reference === null || message.reference === undefined) return;
-
+	// store message content
 	let originalContent = message.content;
-	let referredMessage = await message.fetchReference();
 	// stop the infinite loop
-	if (message.author.bot || referredMessage.author.bot) return;
-	let referredContent = referredMessage.content;
-
+	if (message.author.bot) return;
+	// test all the strings
 	for (let [key, value] of msgReplyPairs.entries()) {
 		if (originalContent.includes(key)) {
-			if (Math.random() < 0.1) {
-				await message.reply(value);
-				return;
-			}
-		} else if (referredContent.includes(key)) {
-			if (Math.random() < 0.1) {
-				await referredMessage.reply(value);
-				return;
-			}
+			await message.reply(value);
+			return;
 		}
 	}
-})
+});
 
 client.on(Events.InteractionCreate, async interaction => {
 	if (!interaction.isChatInputCommand()) return;
