@@ -1,7 +1,7 @@
 // Require the necessary discord.js classes
 const fs = require('fs')
 const path = require('path')
-const { ActivityType, Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink} = require('discord.js');
 const { token } = require('./config.json');
 
 // Create a new client instance
@@ -12,6 +12,9 @@ const client = new Client({
 		GatewayIntentBits.GuildMessageReactions,
 		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildEmojisAndStickers
+	],
+	partials: [
+		Partials.Message, Partials.Reaction, Partials.User
 	],
 });
 
@@ -71,6 +74,7 @@ client.once(Events.ClientReady, async readyClient => {
 	// flavor text for status
 	client.user.setActivity('with human souls', { type: ActivityType.Playing });
 });
+
 let msgReplyPairs = new Map();
 msgReplyPairs.set('helldiver', 'omg isn\'t that like deep rock galactic but with bigger bugs?');
 msgReplyPairs.set('circus', 'im still sad about gummigoo =(');
@@ -93,12 +97,58 @@ client.on('messageCreate', async message => {
 	}
 });
 
-// do the thing with emojis
-const vipChannel = client.channels.cache.get('1232569826287812660');
-client.on(Events.MessageReactionAdd,  reaction => {
-	if ('1220249755939110952' === reaction.emoji.identifier || '1218807773127512106' === reaction.emoji.identifier) {
-		if (reaction.count === 7) {
-			vipChannel.send(reaction.message);
+// do the starboard thing
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+	if (reaction.partial) {
+		try {
+			await reaction.fetch();
+		} catch (error) {
+			console.error('Something went wrong fetching the reaction:', error);
+			return;
+		}
+	}
+	if (reaction.message.partial) {
+		try {
+			await reaction.message.fetch();
+		} catch (error) {
+			console.error('Something went wrong fetching the message:', error);
+			return;
+		}
+	}
+	if (user.partial) {
+		try {
+			await user.fetch();
+		} catch (error) {
+			console.error('Something went wrong fetching the user:', error);
+			return;
+		}
+	}
+
+	if (user.bot) {
+		// ignore our own reactions to avoid any looping
+		return;
+	}
+	let vipChannel = reaction.client.channels.cache.get('1232569826287812660');
+	if (reaction.message.reactions.cache.has('✅') && reaction.message.reactions.cache.get('✅').me) {
+		console.log(`not VIPing message ${reaction.message.id} because it is already marked VIP`);
+		return;
+	}
+	if ('smash' === reaction.emoji.name || 'mepls' === reaction.emoji.name) {
+		if (reaction.count >= 7) {
+			let message = reaction.message;
+			const embed = new EmbedBuilder()
+				.setColor(0xC71585)
+				.setAuthor({ name: message.author.displayName, iconURL: message.author.avatarURL() })
+				.setDescription(message.content.length > 0 ?
+					message.content + `\n\[[Original Message](${messageLink(message.channelId, message.id)})\]`
+					: `[Original Message](${messageLink(message.channelId, message.id)})`)
+				.setImage(message.attachments.size > 0 ? message.attachments.at(0).url : null)
+				.setTimestamp()
+				.setFooter({ text: message.id, iconURL: client.user.avatarURL() });
+
+			await vipChannel.send({ embeds: [embed] }).catch(console.error);
+			await message.react('✅');
+			console.log(`sent message with id ${message.id} to VIP`);
 		}
 	}
 });
