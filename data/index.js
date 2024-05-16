@@ -12,7 +12,7 @@ const client = new Client({
 		GatewayIntentBits.GuildMessageReactions,
 		GatewayIntentBits.GuildMembers,
 		GatewayIntentBits.GuildEmojisAndStickers,
-  GatewayIntentBits.MessageContent
+		GatewayIntentBits.MessageContent
 	],
 	partials: [
 		Partials.Message, Partials.Reaction, Partials.User
