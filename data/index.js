@@ -20,9 +20,9 @@ const client = new Client({
 
 let programStartTime = new Date(Date.now()).toLocaleString('sv-SE');
 
-const logFilePath = path.join(__dirname, `logs/discord-bot_${programStartTime}.log`);
-if (!fs.existsSync(path.join(__dirname, 'logs'))) {
-	fs.mkdir(path.join(__dirname, 'logs'), err => {
+const logFilePath = path.join(__dirname, `../logs/discord-bot_${programStartTime}.log`);
+if (!fs.existsSync(path.join(__dirname, '../logs'))) {
+	fs.mkdir(path.join(__dirname, '../logs'), err => {
 		if (err) {
 			console.error('Error creating \'logs\' directory:' + err)
 		} else {
@@ -128,7 +128,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 		// ignore our own reactions to avoid any looping
 		return;
 	}
-	let vipChannel = reaction.client.channels.cache.get('1232569826287812660');
+	let vipChannel = reaction.client.channels.cache.get('1240533295289077831');
 	if (reaction.message.reactions.cache.has('✅') && reaction.message.reactions.cache.get('✅').me) {
 		console.log(`not VIPing message ${reaction.message.id} because it is already marked VIP`);
 		return;
