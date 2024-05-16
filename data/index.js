@@ -2,7 +2,7 @@
 const fs = require('fs')
 const path = require('path')
 const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink} = require('discord.js');
-const { token } = require('./config.json');
+const { token, vipChannelId } = require('./config.json');
 
 // Create a new client instance
 const client = new Client({
@@ -129,7 +129,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 		// ignore our own reactions to avoid any looping
 		return;
 	}
-	let vipChannel = reaction.client.channels.cache.get('1240533295289077831');
+	let vipChannel = reaction.client.channels.cache.get(vipChannelId);
 	if (reaction.message.reactions.cache.has('✅') && reaction.message.reactions.cache.get('✅').me) {
 		console.log(`not VIPing message ${reaction.message.id} because it is already marked VIP`);
 		return;
