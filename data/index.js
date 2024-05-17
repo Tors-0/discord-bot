@@ -76,11 +76,38 @@ client.once(Events.ClientReady, async readyClient => {
 	client.user.setActivity('with human souls', { type: ActivityType.Playing });
 });
 
-let msgReplyPairs = new Map();
-msgReplyPairs.set('helldiver', 'omg isn\'t that like deep rock galactic but with bigger bugs?');
-msgReplyPairs.set('circus', 'im still sad about gummigoo =(');
-msgReplyPairs.set('outer wilds', 'HOLY SHIT I LOVE OUTER WILDS');
-// when pinged or in a reply, accuse the replied message of taking our position and delete the message with the ping
+// define our keywords and reactions
+let msgReplyPairs = new Map([
+	['helldiver', [
+		'omg isn\'t that like deep rock galactic but with bigger bugs?',
+		'for democracy!!!',
+		'say hello to DEMOCRACY',
+		'lmao helldivers? me when i dive into my gf\'s pussy'
+	]],
+	['circus', [
+		'im still sad about gummigoo =(',
+		'pomni pomni pomni pomni pomni',
+		'are you ready to go on an ADVENTURE?',
+		'\*sad TADC outro music plays\*'
+	]],
+	['outer wilds', [
+		'HOLY SHIT I LOVE OUTER WILDS',
+		'||[OUTER WILDS SPOILER]||',
+		'https://store.steampowered.com/app/753640/Outer_Wilds/',
+		'you should play Outer Wilds NOW!!!'
+	]],
+	['balls', [
+		'gargle my fat balls',
+		'omg balls i know who loves balls. hey <@701201633199128653> look! balls!',
+		'ummm did you mean moderators??? oh wait, whats that? nvm they are called balls',
+		'https://tenor.com/view/liquid-morkite-deep-rock-galactic-drg-dip-my-balls-balls-gif-3684653839745413089'
+	]]
+]);
+function randomInList(array) {
+	// return array[(Math.random() * array.length)];
+	return array[3];
+}
+// occasionally send custom responses to messages containing keywords
 client.on('messageCreate', async message => {
 	// stop the infinite loop
 	if (message.author.bot) return;
@@ -91,7 +118,7 @@ client.on('messageCreate', async message => {
 	for (let [key, value] of msgReplyPairs.entries()) {
 		if (originalContent.includes(key)) {
 			if (Math.random() < 0.4) {
-				await message.reply(value);
+				await message.reply(randomInList(value));
 				return;
 			}
 		}
