@@ -3,6 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink} = require('discord.js');
 const { token, vipChannelId } = require('./config.json');
+const { messageMap } = require("./messageReplies");
 
 // Create a new client instance
 const client = new Client({
@@ -77,32 +78,6 @@ client.once(Events.ClientReady, async readyClient => {
 });
 
 // define our keywords and reactions
-let msgReplyPairs = new Map([
-	['helldiver', [
-		'omg isn\'t that like deep rock galactic but with bigger bugs?',
-		'for democracy!!!',
-		'say hello to DEMOCRACY',
-		'lmao helldivers? me when i dive into my gf\'s pussy'
-	]],
-	['circus', [
-		'im still sad about gummigoo =(',
-		'pomni pomni pomni pomni pomni',
-		'are you ready to go on an ADVENTURE?',
-		'\*sad TADC outro music plays\*'
-	]],
-	['outer wilds', [
-		'HOLY SHIT I LOVE OUTER WILDS',
-		'||[OUTER WILDS SPOILER]||',
-		'https://store.steampowered.com/app/753640/Outer_Wilds/',
-		'you should play Outer Wilds NOW!!!'
-	]],
-	['balls', [
-		'gargle my fat balls',
-		'omg balls i know who loves balls. hey <@701201633199128653> look! balls!',
-		'ummm did you mean moderators??? oh wait, whats that? nvm they are called balls',
-		'https://tenor.com/view/liquid-morkite-deep-rock-galactic-drg-dip-my-balls-balls-gif-3684653839745413089'
-	]]
-]);
 function randomInList(array) {
 	return array.at(Math.random() * array.length);
 }
@@ -114,7 +89,7 @@ client.on('messageCreate', async message => {
 	let originalContent = message.content;
 
 	// test all the strings
-	for (let [key, value] of msgReplyPairs.entries()) {
+	for (let [key, value] of messageMap.entries()) {
 		if (originalContent.includes(key)) {
 			if (Math.random() < 0.4) {
 				await message.reply(randomInList(value));
