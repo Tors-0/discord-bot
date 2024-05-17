@@ -104,8 +104,7 @@ let msgReplyPairs = new Map([
 	]]
 ]);
 function randomInList(array) {
-	// return array[(Math.random() * array.length)];
-	return array[3];
+	return array.at(Math.random() * array.length);
 }
 // occasionally send custom responses to messages containing keywords
 client.on('messageCreate', async message => {
