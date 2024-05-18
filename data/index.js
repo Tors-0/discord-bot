@@ -85,12 +85,10 @@ function randomInList(array) {
 client.on('messageCreate', async message => {
 	// stop the infinite loop
 	if (message.author.bot) return;
-	// store message content
-	let originalContent = message.content;
 
 	// test all the strings
 	for (let [key, value] of messageMap.entries()) {
-		if (originalContent.includes(key)) {
+		if (message.content.search(key) !== -1) {
 			if (Math.random() < 0.4) {
 				await message.reply(randomInList(value));
 				return;
