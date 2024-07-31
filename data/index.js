@@ -2,7 +2,7 @@
 const fs = require('fs')
 const path = require('path')
 const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink} = require('discord.js');
-const { token, vipChannelId } = require('./config.json');
+const { token, vipChannelId, reactionsChannelId } = require('./config.json');
 const { messageMap } = require("./messageReplies");
 
 // Create a new client instance
@@ -129,6 +129,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 		return;
 	}
 	let vipChannel = reaction.client.channels.cache.get(vipChannelId);
+	let reactionsChannel = reaction.client.channels.cache.get(reactionsChannelId);
 	if (reaction.message.reactions.cache.has('✅') && reaction.message.reactions.cache.get('✅').me) {
 		console.log(`not VIPing message ${reaction.message.id} because it is already marked VIP`);
 		return;
@@ -149,6 +150,23 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 			await vipChannel.send({ embeds: [embed] }).catch(console.error);
 			await message.react('✅');
 			console.log(`sent message with id ${message.id} to VIP`);
+		}
+	} else {
+		if (reaction.count >= 3) {
+			let message = reaction.message;
+			const embed = new EmbedBuilder()
+				.setColor(0xC71585)
+				.setAuthor({ name: message.author.displayName, iconURL: message.author.avatarURL() })
+				.setDescription(message.content.length > 0 ?
+					message.content + `\n\n\[[Original Message](${messageLink(message.channelId, message.id)})\]`
+					: `[Original Message](${messageLink(message.channelId, message.id)})`)
+				.setImage(message.attachments.size > 0 ? message.attachments.at(0).url : null)
+				.setTimestamp()
+				.setFooter({ text: message.id, iconURL: client.user.avatarURL() });
+
+			await reactionsChannel.send({ embeds: [embed] }).catch(console.error);
+			await message.react('✅');
+			console.log(`sent message with id ${message.id} to reactions`);
 		}
 	}
 });
