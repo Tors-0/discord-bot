@@ -156,7 +156,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 			let message = reaction.message;
 			const embed = new EmbedBuilder()
 				.setColor(0xC71585)
-				.setTitle('a very ' + reaction.emoji.valueOf() + ' post')
+				.setTitle('a very ' + reaction.emoji.toString() + ' post')
 				.setAuthor({ name: message.author.displayName, iconURL: message.author.avatarURL() })
 				.setDescription(message.content.length > 0 ?
 					message.content + `\n\n\[[Original Message](${messageLink(message.channelId, message.id)})\]`
