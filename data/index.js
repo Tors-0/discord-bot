@@ -134,7 +134,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 		console.log(`not VIPing message ${reaction.message.id} because it is already marked VIP`);
 		return;
 	}
-	if ('smash' === reaction.emoji.name || 'mepls' === reaction.emoji.name) {
+	if ('smash' === reaction.emoji.name || 'mepls' === reaction.emoji.name || 'pass' === reaction.emoji.name || 'minorjumpscare' === reaction.emoji.name) {
 		if (reaction.count >= 7) {
 			let message = reaction.message;
 			const embed = new EmbedBuilder()
@@ -156,7 +156,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 			let message = reaction.message;
 			const embed = new EmbedBuilder()
 				.setColor(0xC71585)
-				.setTitle('a very ' + reaction.emoji + ' post')
+				.setTitle('a very ' + reaction.emoji.valueOf() + ' post')
 				.setAuthor({ name: message.author.displayName, iconURL: message.author.avatarURL() })
 				.setDescription(message.content.length > 0 ?
 					message.content + `\n\n\[[Original Message](${messageLink(message.channelId, message.id)})\]`
