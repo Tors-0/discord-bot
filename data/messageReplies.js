@@ -40,6 +40,25 @@ module.exports = {
             'https://tenor.com/view/reverselag-jackbox-ersel-dance-gif-24504431',
             'its a shame nobody plays anymore :(',
             '<@&1245583011718893688> would you join the game??? pwease 🥺🥺'
+        ]],
+        [new RegExp('lets go gambling', 'i'), [
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* aw dang it',
+            '*click click click* YIPPEER!!! you wind! pogers :3'
         ]]
     ]),
 };
