@@ -38,7 +38,8 @@ module.exports = {
         [new RegExp('jackbox', 'i'), [
             'Looking for people to join again?',
             'https://tenor.com/view/reverselag-jackbox-ersel-dance-gif-24504431',
-            'its a shame nobody plays anymore :('
+            'its a shame nobody plays anymore :(',
+            '<@&1245583011718893688> would you join the game??? pwease 🥺🥺'
         ]]
     ]),
 };
