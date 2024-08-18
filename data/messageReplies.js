@@ -41,24 +41,24 @@ module.exports = {
             'its a shame nobody plays anymore :(',
             '<@&1245583011718893688> would you join the game??? pwease 🥺🥺'
         ]],
-        [new RegExp('lets go gambling', 'i'), [
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* aw dang it',
-            '*click click click* YIPPEER!!! you wind! pogers :3'
+        [new RegExp('(lets go gambling|aw dangit)', 'i'), [
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR* :/',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch ERRRR*',
+            '*chchch DING* YIPPEER!!! you wind! pogers :3'
         ]]
     ]),
 };
