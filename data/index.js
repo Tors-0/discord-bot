@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink} = require('discord.js');
 const { token, vipChannelId, reactionsChannelId } = require('./config.json');
-const { messageMap } = require("./messageReplies");
+const { messageMap, gambaMap } = require("./messageReplies");
 
 // Create a new client instance
 const client = new Client({
@@ -93,6 +93,13 @@ client.on('messageCreate', async message => {
 				await message.reply(randomInList(value));
 				return;
 			}
+		}
+	}
+	// GAMBA TEST
+	for (let [key, value] of gambaMap.entries()) {
+		if (message.content.search(key) !== -1) {
+			await message.reply(randomInList(value));
+			return;
 		}
 	}
 });

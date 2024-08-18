@@ -40,7 +40,9 @@ module.exports = {
             'https://tenor.com/view/reverselag-jackbox-ersel-dance-gif-24504431',
             'its a shame nobody plays anymore :(',
             '<@&1245583011718893688> would you join the game??? pwease 🥺🥺'
-        ]],
+        ]]
+    ]),
+    gambaMap: new Map([
         [new RegExp('(lets go gambling|aw dangit)', 'i'), [
             '*chchch ERRRR*',
             '*chchch ERRRR*',
