@@ -23,7 +23,7 @@ module.exports = {
             'you should play Outer Wilds NOW!!!',
             'https://tenor.com/view/he-played-outer-wilds-outer-wilds-femboy-gif-22516043'
         ]],
-        [new RegExp('balls', 'i'), [
+        [new RegExp('ball', 'i'), [
             'gargle my fat balls x3',
             'omg balls i know who loves balls. hey <@701201633199128653> look! balls!',
             'ummm did you mean moderators??? oh wait, whats that? nvm they are called balls',
@@ -37,7 +37,8 @@ module.exports = {
         ]],
         [new RegExp('jackbox', 'i'), [
             'Looking for people to join again?',
-            'https://tenor.com/view/reverselag-jackbox-ersel-dance-gif-24504431'
+            'https://tenor.com/view/reverselag-jackbox-ersel-dance-gif-24504431',
+            'its a shame nobody plays anymore :('
         ]]
     ]),
 };
