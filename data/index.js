@@ -172,9 +172,15 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 				.setTimestamp()
 				.setFooter({ text: message.id, iconURL: client.user.avatarURL() });
 
-			await reactionsChannel.send({ embeds: [embed] }).catch(console.error);
-			await message.react('✅');
-			console.log(`sent message with id ${message.id} to reactions`);
+			if (reaction.client.channels.cache.get(message.channelId).nsfw) {
+				await vipChannel.send({ embeds: [embed] }).catch(console.error);
+				await message.react('✅');
+				console.log(`sent message with id ${message.id} to VIP`);
+			} else {
+				await reactionsChannel.send({embeds: [embed]}).catch(console.error);
+				await message.react('✅');
+				console.log(`sent message with id ${message.id} to reactions`);
+			}
 		}
 	}
 });
