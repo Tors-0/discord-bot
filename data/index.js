@@ -86,7 +86,7 @@ function randomInList(array) {
 client.on('messageCreate', async message => {
 	// stop the infinite loop
 	if (message.author.bot) return;
-	if (message.mentions.has(self)) {
+	if (message.content.includes('<@1240360093296361493>')) {
 		// be a cutie little bot
 		for (let [key, value] of awawaMap.entries()) {
 			if (message.content.search(key) !== -1) {
