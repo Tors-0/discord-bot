@@ -63,4 +63,14 @@ module.exports = {
             '*chchch DING* YIPPEER!!! you wind! pogers :3'
         ]]
     ]),
+    awawaMap: new Map([
+        [new RegExp('good girl', 'i'), [
+            '> `SYS-REPORT: temperatures heightened o///o`',
+            '> `awawawawaa~ :3`',
+            '> `ERR-REPORT: overload, rebooting ^~^`'
+        ]],
+        [new RegExp('good bot', 'i'), [
+            '> `thankies :]`'
+        ]]
+    ]),
 };

@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink} = require('discord.js');
 const { token, vipChannelId, reactionsChannelId } = require('./config.json');
-const { messageMap, gambaMap } = require("./messageReplies");
+const { messageMap, gambaMap, awawaMap } = require("./messageReplies");
 
 // Create a new client instance
 const client = new Client({
@@ -81,10 +81,20 @@ client.once(Events.ClientReady, async readyClient => {
 function randomInList(array) {
 	return array.at(Math.random() * array.length);
 }
+
 // occasionally send custom responses to messages containing keywords
 client.on('messageCreate', async message => {
 	// stop the infinite loop
 	if (message.author.bot) return;
+	if (message.mentions.has(self)) {
+		// be a cutie little bot
+		for (let [key, value] of awawaMap.entries()) {
+			if (message.content.search(key) !== -1) {
+				await message.reply(randomInList(value));
+				return;
+			}
+		}
+	}
 
 	// test all the strings
 	for (let [key, value] of messageMap.entries()) {
