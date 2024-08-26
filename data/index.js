@@ -1,7 +1,9 @@
 // Require the necessary discord.js classes
 const fs = require('fs')
 const path = require('path')
-const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink} = require('discord.js');
+const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink,
+	ChannelManager, ForumChannel
+} = require('discord.js');
 const { token, vipChannelId, reactionsChannelId } = require('./config.json');
 const { messageMap, gambaMap, awawaMap } = require("./messageReplies");
 
@@ -191,6 +193,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 				await message.react('✅');
 				console.log(`sent message with id ${message.id} to reactions`);
 			}
+			console.log(`channel type = ${reaction.client.channels.cache.get(message.channelId).type}`);
 		}
 	}
 });
