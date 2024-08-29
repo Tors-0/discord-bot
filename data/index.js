@@ -171,7 +171,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 			console.log(`sent message with id ${message.id} to VIP`);
 		}
 	} else {
-		if (reaction.count >= 1) {
+		if (reaction.count >= 3) {
 			let message = reaction.message;
 			const embed = new EmbedBuilder()
 				.setColor(0xC71585)
