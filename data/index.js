@@ -187,20 +187,24 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 			if (reaction.client.channels.cache.get(message.channelId).nsfw) {
 				await vipChannel.send({ embeds: [embed] }).catch(console.error);
 				await message.react('✅');
-				console.log(`sent message with id ${message.id} to VIP`);
+				console.log(`sent message with id ${message.id} to VIP (nsfwchannel)`);
 			} else {
 				if (reaction.client.channels.cache.get(message.channelId).isThread()) {
 					if (reaction.client.channels.cache.get(message.channelId).parent.nsfw) {
 						await vipChannel.send({ embeds: [embed] }).catch(console.error);
 						await message.react('✅');
-						console.log(`sent message with id ${message.id} to VIP`);
+						console.log(`sent message with id ${message.id} to VIP (nsfwthread)`);
+					} else {
+						await reactionsChannel.send({embeds: [embed]}).catch(console.error);
+						await message.react('✅');
+						console.log(`sent message with id ${message.id} to reactions (normiethread)`);
 					}
+				} else {
+					await reactionsChannel.send({embeds: [embed]}).catch(console.error);
+					await message.react('✅');
+					console.log(`sent message with id ${message.id} to reactions (normiechannel)`);
 				}
-				await reactionsChannel.send({embeds: [embed]}).catch(console.error);
-				await message.react('✅');
-				console.log(`sent message with id ${message.id} to reactions`);
 			}
-			console.log(`channel type = ${reaction.client.channels.cache.get(message.channelId).type}`);
 		}
 	}
 });
