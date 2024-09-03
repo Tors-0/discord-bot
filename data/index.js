@@ -149,10 +149,17 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 	}
 	let vipChannel = reaction.client.channels.cache.get(vipChannelId);
 	let reactionsChannel = reaction.client.channels.cache.get(reactionsChannelId);
+	let canReaction = true;
+	let canVIP = true;
 	if (reaction.message.reactions.cache.has('✅') && reaction.message.reactions.cache.get('✅').me) {
-		console.log(`not VIPing message ${reaction.message.id} because it is already marked VIP`);
-		return;
+		console.log(`not reactioning message ${reaction.message.id} because it is already marked reactioned`);
+		canReaction = false;
 	}
+	if (reaction.message.reactions.cache.has('☑') && reaction.message.reactions.cache.get('☑').me) {
+		console.log(`not VIPing message ${reaction.message.id} because it is already marked VIP`);
+		canVIP = false;
+	}
+
 	if ('smash' === reaction.emoji.name || 'mepls' === reaction.emoji.name || 'pass' === reaction.emoji.name || 'minorjumpscare' === reaction.emoji.name) {
 		if (reaction.count >= 7) {
 			let message = reaction.message;
@@ -166,9 +173,11 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 				.setTimestamp()
 				.setFooter({ text: message.id, iconURL: client.user.avatarURL() });
 
-			await vipChannel.send({ embeds: [embed] }).catch(console.error);
-			await message.react('✅');
-			console.log(`sent message with id ${message.id} to VIP`);
+			if (canVIP) {
+				await vipChannel.send({embeds: [embed]}).catch(console.error);
+				await message.react('☑');
+				console.log(`sent message with id ${message.id} to VIP`);
+			}
 		}
 	} else {
 		if (reaction.count >= 1) {
@@ -185,24 +194,32 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 				.setFooter({ text: message.id, iconURL: client.user.avatarURL() });
 
 			if (reaction.client.channels.cache.get(message.channelId).nsfw) {
-				await vipChannel.send({ embeds: [embed] }).catch(console.error);
-				await message.react('✅');
-				console.log(`sent message with id ${message.id} to VIP (nsfwchannel)`);
+				if (canVIP) {
+					await vipChannel.send({embeds: [embed]}).catch(console.error);
+					await message.react('☑');
+					console.log(`sent message with id ${message.id} to VIP (nsfwchannel)`);
+				}
 			} else {
 				if (reaction.client.channels.cache.get(message.channelId).isThread()) {
 					if (reaction.client.channels.cache.get(message.channelId).parent.nsfw) {
-						await vipChannel.send({ embeds: [embed] }).catch(console.error);
-						await message.react('✅');
-						console.log(`sent message with id ${message.id} to VIP (nsfwthread)`);
+						if (canVIP) {
+							await vipChannel.send({embeds: [embed]}).catch(console.error);
+							await message.react('☑');
+							console.log(`sent message with id ${message.id} to VIP (nsfwthread)`);
+						}
 					} else {
-						await reactionsChannel.send({embeds: [embed]}).catch(console.error);
-						await message.react('✅');
-						console.log(`sent message with id ${message.id} to reactions (normiethread)`);
+						if (canReaction) {
+							await reactionsChannel.send({embeds: [embed]}).catch(console.error);
+							await message.react('✅');
+							console.log(`sent message with id ${message.id} to reactions (normiethread)`);
+						}
 					}
 				} else {
-					await reactionsChannel.send({embeds: [embed]}).catch(console.error);
-					await message.react('✅');
-					console.log(`sent message with id ${message.id} to reactions (normiechannel)`);
+					if (canReaction) {
+						await reactionsChannel.send({embeds: [embed]}).catch(console.error);
+						await message.react('✅');
+						console.log(`sent message with id ${message.id} to reactions (normiechannel)`);
+					}
 				}
 			}
 		}
