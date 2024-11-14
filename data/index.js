@@ -1,11 +1,13 @@
 // Require the necessary discord.js classes
-const fs = require('fs')
-const path = require('path')
+const fs = require('fs');
+const path = require('path');
+const util = require('util');
 const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink,
 	ChannelManager, ForumChannel, ThreadChannel
 } = require('discord.js');
-const { token, vipChannelId, reactionsChannelId } = require('./config.json');
+const { token, vipChannelId, reactionsChannelId, statusChannelId } = require('./config.json');
 const { messageMap, gambaMap, awawaMap } = require("./messageReplies");
+const {data} = require("./commands/utility/ping");
 
 // Create a new client instance
 const client = new Client({
@@ -21,6 +23,8 @@ const client = new Client({
 		Partials.Message, Partials.Reaction, Partials.User
 	],
 });
+
+const readFileContent = util.promisify(fs.readFile);
 
 let programStartTime = new Date(Date.now()).toLocaleString('sv-SE');
 
@@ -250,3 +254,50 @@ client.on(Events.InteractionCreate, async interaction => {
 
 // Log in to Discord with your client's token
 client.login(token);
+
+let lastDockerStatus = "(healthy)"; // lol
+let lastTunnelStatus = "";
+
+if (!fs.existsSync(path.join(__dirname, '../tmps'))) {
+	fs.mkdir(path.join(__dirname, '../tmps'), err => {
+		if (err) {
+			console.error('Error creating \'tmps\' directory:' + err)
+		} else {
+			console.log('Successfully created \'tmps\' directory')
+		}
+	});
+} else {
+	console.log('tmps directory already exists, continuing...');
+}
+
+async function readTemp(filename) {
+	await readFileContent(path.join(__dirname, "../tmps/", filename))
+		.then(buff => {
+			if (buff === undefined) {
+				return "undef";
+			} else {
+				return buff.toString();
+			}
+		})
+		.catch(err => {
+			console.log(`Error occurs, Error code -> ${err.code}, Error No -> ${err.errno}`);
+			return "fserr";
+		});
+}
+async function uptimeReport(dockerStat, tunnelStat) {
+	let uptimeChannel = client.channels.cache.get(statusChannelId);
+	let message = "*are thine servers up?* :O\ndocker: " + dockerStat + "\ntunnel: " + tunnelStat;
+	await uptimeChannel.send(message);
+}
+
+setInterval(async () => {
+	let newDockerStatus = readTemp("tmp-dockerstatus.txt");
+	let newTunnelStatus = readTemp("tmp-tunnel-formatted.txt");
+
+	if ((newDockerStatus).includes("(healthy)") !== lastDockerStatus.includes("(healthy)") || (newTunnelStatus).trim().length <= 5) {
+		uptimeReport((newDockerStatus).toString(), (newTunnelStatus).toString()).then(() => {
+			lastDockerStatus = newDockerStatus.toString();
+			lastTunnelStatus = newTunnelStatus.toString();
+		});
+	}
+}, 60_000);

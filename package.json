@@ -9,6 +9,7 @@
   "author": "Rae Johnston",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^14.15.2"
+    "discord.js": "^14.15.2",
+    "n": "^10.1.0"
   }
 }
