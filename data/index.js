@@ -255,7 +255,7 @@ client.on(Events.InteractionCreate, async interaction => {
 // Log in to Discord with your client's token
 client.login(token);
 
-let lastDockerStatus = "(healthy)"; // lol
+let lastDockerStatus = "start";
 let lastTunnelStatus = "";
 
 if (!fs.existsSync(path.join(__dirname, '../tmps'))) {
@@ -270,34 +270,23 @@ if (!fs.existsSync(path.join(__dirname, '../tmps'))) {
 	console.log('tmps directory already exists, continuing...');
 }
 
-async function readTemp(filename) {
-	await readFileContent(path.join(__dirname, "../tmps/", filename))
-		.then(buff => {
-			if (buff === undefined) {
-				return "undef";
-			} else {
-				return buff.toString();
-			}
-		})
-		.catch(err => {
-			console.log(`Error occurs, Error code -> ${err.code}, Error No -> ${err.errno}`);
-			return "fserr";
-		});
-}
 async function uptimeReport(dockerStat, tunnelStat) {
 	let uptimeChannel = client.channels.cache.get(statusChannelId);
 	let message = "*are thine servers up?* :O\ndocker: " + dockerStat + "\ntunnel: " + tunnelStat;
 	await uptimeChannel.send(message);
 }
 
-setInterval(async () => {
-	let newDockerStatus = readTemp("tmp-dockerstatus.txt");
-	let newTunnelStatus = readTemp("tmp-tunnel-formatted.txt");
+let jsonLocation = path.join(__dirname, '../tmps/tmp-formatted.json');
 
-	if ((newDockerStatus).includes("(healthy)") !== lastDockerStatus.includes("(healthy)") || (newTunnelStatus).trim().length <= 5) {
-		uptimeReport((newDockerStatus).toString(), (newTunnelStatus).toString()).then(() => {
-			lastDockerStatus = newDockerStatus.toString();
-			lastTunnelStatus = newTunnelStatus.toString();
+setInterval(async () => {
+	let jsonData = JSON.parse(fs.readFileSync(jsonLocation, 'utf8'));
+
+	let { dockerStat, tunnelStat } = jsonData;
+
+	if ((dockerStat).includes("(healthy)") !== lastDockerStatus.includes("(healthy)") || (tunnelStat).trim().length <= 3 || lastDockerStatus.includes("start")) {
+		uptimeReport(dockerStat, tunnelStat).then(() => {
+			lastDockerStatus = dockerStat;
+			lastTunnelStatus = tunnelStat;
 		});
 	}
 }, 60_000);
