@@ -73,4 +73,12 @@ module.exports = {
             '> `thankies :]`'
         ]]
     ]),
+    statusMessages: [
+        '*are thine servers up :o*',
+        'oh server, what be your status?',
+        'servus pluribus status:',
+        'TURN ON THE ORB, ANY CHANNEL',
+        'roses: red\nviolets: blue',
+        'ah, you\'re finally awake'
+    ],
 };

@@ -19,8 +19,7 @@ touch ${EXPORT_JSON}
 touch ${EXPORT_JSON_FRM}
 
 ## grab status of mc docker container and write to file
-#sudo docker ps --filter name=mc --format {{.Status}} > ${DOCKER}
-echo "oh no :(" > ${DOCKER}
+docker ps --filter name=mc --format {{.Status}} > ${DOCKER}
 
 ## grab ping data from tunnel server
 ping -c 8 71.231.123.172 > ${TUNNEL}

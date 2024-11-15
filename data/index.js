@@ -6,7 +6,7 @@ const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBit
 	ChannelManager, ForumChannel, ThreadChannel
 } = require('discord.js');
 const { token, vipChannelId, reactionsChannelId, statusChannelId } = require('./config.json');
-const { messageMap, gambaMap, awawaMap } = require("./messageReplies");
+const { messageMap, gambaMap, awawaMap, statusMessages } = require("./messageReplies");
 const {data} = require("./commands/utility/ping");
 
 // Create a new client instance
@@ -23,8 +23,6 @@ const client = new Client({
 		Partials.Message, Partials.Reaction, Partials.User
 	],
 });
-
-const readFileContent = util.promisify(fs.readFile);
 
 let programStartTime = new Date(Date.now()).toLocaleString('sv-SE');
 
@@ -272,7 +270,7 @@ if (!fs.existsSync(path.join(__dirname, '../tmps'))) {
 
 async function uptimeReport(dockerStat, tunnelStat) {
 	let uptimeChannel = client.channels.cache.get(statusChannelId);
-	let message = "*are thine servers up?* :O\ndocker: " + dockerStat + "\ntunnel: " + tunnelStat;
+	let message = randomInList(statusMessages) + "\ndocker: " + dockerStat + "\ntunnel: " + tunnelStat;
 	await uptimeChannel.send(message);
 }
 
@@ -282,6 +280,7 @@ setInterval(async () => {
 	let jsonData = JSON.parse(fs.readFileSync(jsonLocation, 'utf8'));
 
 	let { dockerStat, tunnelStat } = jsonData;
+	if (dockerStat.length === 0) dockerStat = "docker not installed :p";
 
 	if ((dockerStat).includes("(healthy)") !== lastDockerStatus.includes("(healthy)") || (tunnelStat).trim().length <= 3 || lastDockerStatus.includes("start")) {
 		uptimeReport(dockerStat, tunnelStat).then(() => {
