@@ -163,7 +163,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 	}
 
 	if ('smash' === reaction.emoji.name || 'mepls' === reaction.emoji.name || 'pass' === reaction.emoji.name || 'minorjumpscare' === reaction.emoji.name) {
-		if (reaction.count >= 6) {
+		if (reaction.count >= 1) {
 			let message = reaction.message;
 			const embed = new EmbedBuilder()
 				.setColor(0xC71585)
@@ -171,7 +171,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 				.setDescription(message.content.length > 0 ?
 					message.content + `\n\[[Original Message](${messageLink(message.channelId, message.id)})\]`
 					: `[Original Message](${messageLink(message.channelId, message.id)})`)
-				.setImage(message.attachments.size > 0 ? message.attachments.at(0).url : message.embeds.length > 0 ? message.embeds.at(0).image : null)
+				.setImage(message.attachments.size > 0 ? message.attachments.at(0).url : message.embeds.length > 0 ? message.embeds.at(0).thumbnail.proxyURL : null)
 				.setTimestamp()
 				.setFooter({ text: message.id, iconURL: client.user.avatarURL() });
 
