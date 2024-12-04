@@ -271,7 +271,6 @@ if (!fs.existsSync(path.join(__dirname, '../tmps'))) {
 
 async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment) {
 	let uptimeChannel = client.channels.cache.get(statusChannelId);
-	let message = randomInList(statusMessages) + "\ndocker: " + dockerStat + "\ntunnel: " + tunnelStat;
 
 	let color;
 	let msg;
@@ -304,7 +303,7 @@ async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment) {
 			{name: 'Public Status', value: publicStat, inline: true}
 		);
 
-	await uptimeChannel.send(message);
+	await uptimeChannel.send(newEmbed);
 }
 
 let jsonLocation = path.join(__dirname, '../tmps/tmp-formatted.json');
