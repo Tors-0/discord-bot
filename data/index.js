@@ -163,7 +163,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 	}
 
 	if ('smash' === reaction.emoji.name || 'mepls' === reaction.emoji.name || 'pass' === reaction.emoji.name || 'minorjumpscare' === reaction.emoji.name) {
-		if (reaction.count >= 1) {
+		if (reaction.count >= 6) {
 			let message = reaction.message;
 			const embed = new EmbedBuilder()
 				.setColor(0xC71585)
@@ -171,7 +171,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 				.setDescription(message.content.length > 0 ?
 					message.content + `\n\[[Original Message](${messageLink(message.channelId, message.id)})\]`
 					: `[Original Message](${messageLink(message.channelId, message.id)})`)
-				.setImage(message.attachments.size > 0 ? message.attachments.at(0).url : message.embeds.length > 0 ? message.embeds.at(0).thumbnail.proxyURL : null)
+				.setImage(message.attachments.size > 0 ? message.attachments.at(0).url : message.embeds.length > 0 ? message.embeds.at(0).image : null)
 				.setTimestamp()
 				.setFooter({ text: message.id, iconURL: client.user.avatarURL() });
 
@@ -255,6 +255,7 @@ client.login(token);
 
 let lastDockerStatus = "start";
 let lastTunnelStatus = "";
+let lastPublicStatus = "";
 
 if (!fs.existsSync(path.join(__dirname, '../tmps'))) {
 	fs.mkdir(path.join(__dirname, '../tmps'), err => {
@@ -268,9 +269,41 @@ if (!fs.existsSync(path.join(__dirname, '../tmps'))) {
 	console.log('tmps directory already exists, continuing...');
 }
 
-async function uptimeReport(dockerStat, tunnelStat) {
+async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment) {
 	let uptimeChannel = client.channels.cache.get(statusChannelId);
 	let message = randomInList(statusMessages) + "\ndocker: " + dockerStat + "\ntunnel: " + tunnelStat;
+
+	let color;
+	let msg;
+	switch (assessment) {
+		case "-1":
+			color = 0xFFFF00;
+			msg = 'Possibly Down';
+			break;
+		case "0":
+			color = 0x00FF00;
+			msg = 'Server Up';
+			break;
+		case "1":
+			color = 0xFF0000;
+			msg = 'Server Down'
+			break;
+		default:
+			color = 0x000000;
+			msg = 'Unknown';
+	}
+
+	let newEmbed = new EmbedBuilder()
+		.setColor(color)
+		.setTitle(randomInList(statusMessages))
+		.addFields(
+			{name: 'Assessment', value: assessment},
+			{name: '\u200B', value: '\u200B'},
+			{name: 'Docker Status', value: dockerStat, inline: true},
+			{name: 'Tunnel Status', value: tunnelStat, inline: true},
+			{name: 'Public Status', value: publicStat, inline: true}
+		);
+
 	await uptimeChannel.send(message);
 }
 
@@ -279,11 +312,23 @@ let jsonLocation = path.join(__dirname, '../tmps/tmp-formatted.json');
 setInterval(async () => {
 	let jsonData = JSON.parse(fs.readFileSync(jsonLocation, 'utf8'));
 
-	let { dockerStat, tunnelStat } = jsonData;
+	let { dockerStat, tunnelStat, publicStat } = jsonData;
 	if (dockerStat.length === 0) dockerStat = "docker not installed :p";
 
-	if ((dockerStat).includes("(healthy)") !== lastDockerStatus.includes("(healthy)") || (tunnelStat).trim().length <= 3 || lastDockerStatus.includes("start")) {
-		uptimeReport(dockerStat, tunnelStat).then(() => {
+	if ((dockerStat).includes("(healthy)") !== lastDockerStatus.includes("(healthy)")
+		|| ((tunnelStat).trim().length <= 3 !== (lastTunnelStatus.trim().length <= 3))
+		|| ((publicStat).trim().length <= 3 !== (lastPublicStatus.trim().length <= 3))
+		|| lastDockerStatus.includes("start"))
+	{
+		// determine up/down
+		let dockerUp = dockerStat.includes("(healthy)");
+		let tunnelUp = tunnelStat.trim().length > 3;
+		let publicUp = publicStat.trim().length > 3;
+
+		let assessment = (dockerUp && tunnelUp) ? publicUp ? "0" : "-1" : "1";
+
+		// send report
+		uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
 			lastDockerStatus = dockerStat;
 			lastTunnelStatus = tunnelStat;
 		});
