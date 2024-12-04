@@ -24,34 +24,6 @@ const client = new Client({
 	],
 });
 
-let programStartTime = new Date(Date.now()).toLocaleString('sv-SE');
-
-const logFilePath = path.join(__dirname, `../logs/discord-bot_${programStartTime}.log`);
-if (!fs.existsSync(path.join(__dirname, '../logs'))) {
-	fs.mkdir(path.join(__dirname, '../logs'), err => {
-		if (err) {
-			console.error('Error creating \'logs\' directory:' + err)
-		} else {
-			console.log('Successfully created \'logs\' directory')
-		}
-	});
-} else {
-	console.log('logs directory already exists, continuing...');
-}
-
-console.originalLog = console.log;
-
-console.log = function(message) {
-	fs.appendFile(logFilePath, message + '\n', (err) => {
-		if (err) {
-			console.error('Error appending to log file:', err);
-		} else {
-			console.originalLog(message);
-		}
-	});
-}
-console.log(`now logging to ${logFilePath}`);
-
 client.commands = new Collection();
 
 const foldersPath = path.join(__dirname, 'commands');
@@ -271,6 +243,8 @@ if (!fs.existsSync(path.join(__dirname, '../tmps'))) {
 
 async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment) {
 	let uptimeChannel = client.channels.cache.get(statusChannelId);
+	if (tunnelStat.trim().length <= 3) tunnelStat = "unreachable";
+	if (publicStat.trim().length <= 3) publicStat = "unreachable";
 
 	let color;
 	let msg;
@@ -294,16 +268,15 @@ async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment) {
 
 	let newEmbed = new EmbedBuilder()
 		.setColor(color)
-		.setTitle(randomInList(statusMessages))
+		.setTitle(msg)
 		.addFields(
-			{name: 'Assessment', value: assessment},
-			{name: '\u200B', value: '\u200B'},
 			{name: 'Docker Status', value: dockerStat, inline: true},
 			{name: 'Tunnel Status', value: tunnelStat, inline: true},
 			{name: 'Public Status', value: publicStat, inline: true}
-		);
+		)
+		.setFooter({ text: randomInList(statusMessages) });
 
-	await uptimeChannel.send(newEmbed);
+	await uptimeChannel.send({embeds: [newEmbed]});
 }
 
 let jsonLocation = path.join(__dirname, '../tmps/tmp-formatted.json');
@@ -321,8 +294,8 @@ setInterval(async () => {
 	{
 		// determine up/down
 		let dockerUp = dockerStat.includes("(healthy)");
-		let tunnelUp = tunnelStat.trim().length > 3;
-		let publicUp = publicStat.trim().length > 3;
+		let tunnelUp = (tunnelStat).trim().length > 3;
+		let publicUp = (publicStat).trim().length > 3;
 
 		let assessment = (dockerUp && tunnelUp) ? publicUp ? "0" : "-1" : "1";
 
