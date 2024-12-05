@@ -299,7 +299,7 @@ setInterval(async () => {
 		// determine up/down
 		let dockerUp = dockerStat.includes("(healthy)");
 		let tunnelUp = (tunnelStat).trim().length > 3;
-		let publicUp = (publicStat).trim().length > 3;
+		let publicUp = (publicStat).contains("open");
 
 		let assessment = (dockerUp && tunnelUp) ? publicUp ? "0" : "-1" : "1";
 
