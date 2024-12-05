@@ -285,27 +285,28 @@ setInterval(async () => {
 	let jsonData = JSON.parse(fs.readFileSync(jsonLocation, 'utf8'));
 
 	let { dockerStat, tunnelStat } = jsonData;
+	let publicStat;
 	await portscanner.checkPortStatus(25565, '98.247.215.114').then(function(status) {
-		let publicStat = status;
-		if (dockerStat.length === 0) dockerStat = "docker not installed :p";
-
-		if ((dockerStat).includes("(healthy)") !== lastDockerStatus.includes("(healthy)")
-			|| ((tunnelStat).trim().length <= 3 !== (lastTunnelStatus.trim().length <= 3))
-			|| ((publicStat).trim().length <= 3 !== (lastPublicStatus.trim().length <= 3))
-			|| lastDockerStatus.includes("start"))
-		{
-			// determine up/down
-			let dockerUp = dockerStat.includes("(healthy)");
-			let tunnelUp = (tunnelStat).trim().length > 3;
-			let publicUp = (publicStat).trim().length > 3;
-
-			let assessment = (dockerUp && tunnelUp) ? publicUp ? "0" : "-1" : "1";
-
-			// send report
-			uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
-				lastDockerStatus = dockerStat;
-				lastTunnelStatus = tunnelStat;
-			});
-		}
+		publicStat = status;
 	});
-}, 60_000);
+	if (dockerStat.length === 0) dockerStat = "docker not installed :p";
+
+	if ((dockerStat).includes("(healthy)") !== lastDockerStatus.includes("(healthy)")
+		|| ((tunnelStat).trim().length <= 3 !== (lastTunnelStatus.trim().length <= 3))
+		|| ((publicStat).trim().length <= 3 !== (lastPublicStatus.trim().length <= 3))
+		|| lastDockerStatus.includes("start"))
+	{
+		// determine up/down
+		let dockerUp = dockerStat.includes("(healthy)");
+		let tunnelUp = (tunnelStat).trim().length > 3;
+		let publicUp = (publicStat).trim().length > 3;
+
+		let assessment = (dockerUp && tunnelUp) ? publicUp ? "0" : "-1" : "1";
+
+		// send report
+		uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
+			lastDockerStatus = dockerStat;
+			lastTunnelStatus = tunnelStat;
+		});
+	}
+}, 20_000);
