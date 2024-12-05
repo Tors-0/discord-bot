@@ -293,7 +293,7 @@ setInterval(async () => {
 
 	if ((dockerStat).includes("(healthy)") !== lastDockerStatus.includes("(healthy)")
 		|| ((tunnelStat).trim().length <= 3 !== (lastTunnelStatus.trim().length <= 3))
-		|| ((publicStat).trim().length <= 3 !== (lastPublicStatus.trim().length <= 3))
+		|| ((publicStat).contains("open") !== (lastPublicStatus.contains("open")))
 		|| lastDockerStatus.includes("start"))
 	{
 		// determine up/down
@@ -307,6 +307,7 @@ setInterval(async () => {
 		uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
 			lastDockerStatus = dockerStat;
 			lastTunnelStatus = tunnelStat;
+			lastPublicStatus = publicStat;
 		});
 	}
-}, 20_000);
+}, 60_000);
