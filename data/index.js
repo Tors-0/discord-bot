@@ -135,7 +135,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 	}
 
 	if ('smash' === reaction.emoji.name || 'mepls' === reaction.emoji.name || 'pass' === reaction.emoji.name || 'minorjumpscare' === reaction.emoji.name) {
-		if (reaction.count >= 6) {
+		if (reaction.count >= 5) {
 			let message = reaction.message;
 			const embed = new EmbedBuilder()
 				.setColor(0xC71585)
