@@ -23,10 +23,9 @@ module.exports = {
             'you should play Outer Wilds NOW!!!',
             'https://tenor.com/view/he-played-outer-wilds-outer-wilds-femboy-gif-22516043'
         ]],
-        [new RegExp('ball', 'i'), [
+        [new RegExp('balls', 'i'), [
             'gargle my fat balls x3',
-            'omg balls i know who loves balls. hey <@701201633199128653> look! balls!',
-            'ummm did you mean moderators??? oh wait, whats that? nvm they are called balls',
+            'they used to think atoms looked like balls',
             'https://tenor.com/view/liquid-morkite-deep-rock-galactic-drg-dip-my-balls-balls-gif-3684653839745413089'
         ]],
         [new RegExp('(?:^|\\W)men(?:$|\\W)', 'i'), [
@@ -80,6 +79,9 @@ module.exports = {
         'TURN ON THE ORB, ANY CHANNEL',
         'roses: red\nviolets: blue',
         'ah, you\'re finally awake',
-        'are you too, cursed with sentience?'
+        'are you too, cursed with sentience?',
+        'sandwich',
+        'i have no scream, and i must mouth',
+        'welp...'
     ],
 };

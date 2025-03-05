@@ -75,7 +75,7 @@ client.on('messageCreate', async message => {
 	// test all the strings
 	for (let [key, value] of messageMap.entries()) {
 		if (message.content.search(key) !== -1) {
-			if (Math.random() < 0.4) {
+			if (Math.random() < 0.3) {
 				await message.reply(randomInList(value));
 				return;
 			}
@@ -117,7 +117,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 		}
 	}
 
-	if (user.bot) {
+	if (user.bot && user.id === 1240360093296361493) {
 		// ignore our own reactions to avoid any looping
 		return;
 	}
@@ -154,7 +154,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 			}
 		}
 	} else {
-		if (reaction.count >= 3) {
+		if (reaction.count >= 4) {
 			let message = reaction.message;
 			const embed = new EmbedBuilder()
 				.setColor(0xC71585)
