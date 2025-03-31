@@ -284,22 +284,21 @@ let jsonLocation = path.join(__dirname, '../tmps/tmp-formatted.json');
 setInterval(async () => {
 	let jsonData = JSON.parse(fs.readFileSync(jsonLocation, 'utf8'));
 
-	let { dockerStat, tunnelStat } = jsonData;
-	let publicStat;
-	await portscanner.checkPortStatus(25565, '98.247.215.114').then(function(status) {
+	let { dockerStat, tunnelStat, publicStat } = jsonData;
+	await portscanner.checkPortStatus(25565, 'klaymore.me').then(function(status) {
 		publicStat = status;
 	});
 	if (dockerStat.length === 0) dockerStat = "docker not installed :p";
 
 	if ((dockerStat).includes("(healthy)") !== lastDockerStatus.includes("(healthy)")
 		|| ((tunnelStat).trim().length <= 3 !== (lastTunnelStatus.trim().length <= 3))
-		|| ((publicStat).contains("open") !== (lastPublicStatus.contains("open")))
+		|| ((publicStat).includes("open") !== (lastPublicStatus.includes("open")))
 		|| lastDockerStatus.includes("start"))
 	{
 		// determine up/down
 		let dockerUp = dockerStat.includes("(healthy)");
 		let tunnelUp = (tunnelStat).trim().length > 3;
-		let publicUp = (publicStat).contains("open");
+		let publicUp = (publicStat).includes("open");
 
 		let assessment = (dockerUp && tunnelUp) ? publicUp ? "0" : "-1" : "1";
 

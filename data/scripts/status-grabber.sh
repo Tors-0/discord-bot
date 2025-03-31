@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## have you considered using variables
-FILEPATH=/home/u1/discord-bot-master/tmps/
+FILEPATH=/home/rae/discord-bot-master/tmps/
 DOCKER=$FILEPATH"tmp-dockerstatus.txt"
 TUNNEL=$FILEPATH"tmp-tunnelstatus.txt"
 TNL_FORMAT=$FILEPATH"tmp-tunnel-format.txt"
@@ -35,7 +35,7 @@ cat $TUNNEL | grep "rtt" | awk -F '/' 'END {print $7}' >> $TNL_FORMAT
 sed ':label1 ; N ; $! b label1 ; s/\n//g' $TNL_FORMAT > $TNL_FORMATTED
 
 ## grab ping data from public server ip
-ping -c 8 71.231.122.199 > ${PUBLIC}
+ping -c 8 klaymore.me > ${PUBLIC}
 
 ## yay formatting time
 cat $PUBLIC | grep "rtt" | awk -F '/' 'END {print $5}' > $PB_FORMAT
