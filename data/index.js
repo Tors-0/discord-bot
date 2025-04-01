@@ -280,6 +280,7 @@ async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment) {
 }
 
 let jsonLocation = path.join(__dirname, '../tmps/tmp-formatted.json');
+let lastAssessment = null;
 
 setInterval(async () => {
 	let jsonData = JSON.parse(fs.readFileSync(jsonLocation, 'utf8'));
@@ -302,11 +303,25 @@ setInterval(async () => {
 
 		let assessment = (dockerUp && tunnelUp) ? publicUp ? "0" : "-1" : "1";
 
-		// send report
-		uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
-			lastDockerStatus = dockerStat;
-			lastTunnelStatus = tunnelStat;
-			lastPublicStatus = publicStat;
-		});
+		if (assessment === "-1") {
+			if (lastAssessment === "-1") {
+			} else {
+				// send report if we don't have two possible downs in a row
+				uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
+					lastDockerStatus = dockerStat;
+					lastTunnelStatus = tunnelStat;
+					lastPublicStatus = publicStat;
+				});
+			}
+		} else {
+			// send report
+			uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
+				lastDockerStatus = dockerStat;
+				lastTunnelStatus = tunnelStat;
+				lastPublicStatus = publicStat;
+			});
+		}
+
+		lastAssessment = assessment;
 	}
 }, 60_000);
