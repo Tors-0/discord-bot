@@ -281,6 +281,7 @@ async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment) {
 
 let jsonLocation = path.join(__dirname, '../tmps/tmp-formatted.json');
 let lastAssessment = null;
+let concurrentPossibleDowns = 0;
 
 setInterval(async () => {
 	let jsonData = JSON.parse(fs.readFileSync(jsonLocation, 'utf8'));
@@ -301,12 +302,13 @@ setInterval(async () => {
 		let tunnelUp = (tunnelStat).trim().length > 3;
 		let publicUp = (publicStat).includes("open");
 
-		let assessment = (dockerUp && tunnelUp) ? publicUp ? "0" : "-1" : "1";
+		let assessment = (dockerUp && tunnelUp) ? (publicUp ? "0" : "-1") : "1";
 
 		if (assessment === "-1") {
-			if (lastAssessment === "-1") {
-			} else {
-				// send report if we don't have two possible downs in a row
+			concurrentPossibleDowns++;
+			
+			if (concurrentPossibleDowns >= 3) {
+				// send report if we have several possibly down statuses in a row
 				uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
 					lastDockerStatus = dockerStat;
 					lastTunnelStatus = tunnelStat;
@@ -314,6 +316,8 @@ setInterval(async () => {
 				});
 			}
 		} else {
+			concurrentPossibleDowns = 0;
+			
 			// send report
 			uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
 				lastDockerStatus = dockerStat;
