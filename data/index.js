@@ -307,7 +307,7 @@ setInterval(async () => {
 		if (assessment === "-1") {
 			concurrentPossibleDowns++;
 			
-			if (concurrentPossibleDowns >= 3) {
+			if (concurrentPossibleDowns >= 5) {
 				// send report if we have several possibly down statuses in a row
 				uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
 					lastDockerStatus = dockerStat;
