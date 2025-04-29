@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ## have you considered using variables
-FILEPATH=/home/rae/discord-bot-master/tmps/
+FILEPATH=/home/u1/discord-bot-master/tmps/
 DOCKER=$FILEPATH"tmp-dockerstatus.txt"
 TUNNEL=$FILEPATH"tmp-tunnelstatus.txt"
 TNL_FORMAT=$FILEPATH"tmp-tunnel-format.txt"
