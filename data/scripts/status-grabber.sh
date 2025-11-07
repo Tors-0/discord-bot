@@ -25,7 +25,7 @@ touch ${EXPORT_JSON_FRM}
 sudo docker ps --filter name=mc --format {{.Status}} > ${DOCKER}
 
 ## grab ping data from tunnel server
-ping -c 8 10.100.0.1 > ${TUNNEL}
+ping -c 8 10.100.0.2 > ${TUNNEL}
 
 ## yay formatting time
 cat $TUNNEL | grep "rtt" | awk -F '/' 'END {print $5}' > $TNL_FORMAT
