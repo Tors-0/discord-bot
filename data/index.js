@@ -123,6 +123,16 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 	}
 	let vipChannel = reaction.client.channels.cache.get(vipChannelId);
 	let reactionsChannel = reaction.client.channels.cache.get(reactionsChannelId);
+
+	if (!reactionsChannel || !vipChannel) {
+		try {
+			vipChannel = await client.channels.fetch(vipChannelId);
+			reactionsChannel = await client.channels.fetch(reactionsChannelId);
+		} catch(e) {
+			console.log(e);
+		}
+	}
+
 	let canReaction = true;
 	let canVIP = true;
 	if (reaction.message.reactions.cache.has('✅') && reaction.message.reactions.cache.get('✅').me) {
@@ -243,6 +253,15 @@ if (!fs.existsSync(path.join(__dirname, '../tmps'))) {
 
 async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment) {
 	let uptimeChannel = client.channels.cache.get(statusChannelId);
+
+	if (!uptimeChannel) {
+		try {
+			uptimeChannel = await client.channels.fetch(statusChannelId);
+		} catch(e) {
+			console.log(e);
+		}
+	}
+
 	if (tunnelStat.trim().length <= 3) tunnelStat = "unreachable";
 	if (publicStat.trim().length <= 3) publicStat = "unreachable";
 
