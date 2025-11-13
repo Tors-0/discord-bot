@@ -251,7 +251,7 @@ if (!fs.existsSync(path.join(__dirname, '../tmps'))) {
 	console.log('tmps directory already exists, continuing...');
 }
 
-async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment) {
+async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment, uptime, percent_uptime) {
 	let uptimeChannel = client.channels.cache.get(statusChannelId);
 
 	if (!uptimeChannel) {
@@ -293,12 +293,17 @@ async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment) {
 			{name: 'Tunnel Status', value: tunnelStat, inline: true},
 			{name: 'Public Status', value: publicStat, inline: true}
 		)
+		.addFields(
+			{name: 'Percent Uptime', value: uptime, inline: true},
+			{name: 'Current Uptime', value: percent_uptime, inline: true}
+		)
 		.setFooter({ text: randomInList(statusMessages) });
 
 	await uptimeChannel.send({embeds: [newEmbed]});
 }
 
 let jsonLocation = path.join(__dirname, '../tmps/tmp-formatted.json');
+let uptimeLocation = path.join(__dirname, '../tmps/uptime.csv');
 let lastAssessment = null;
 let concurrentPossibleDowns = 0;
 
@@ -307,13 +312,14 @@ setInterval(async () => {
 
 	let { dockerStat, tunnelStat, publicStat } = jsonData;
 	await portscanner.checkPortStatus(25565, 'klaymore.me').then(function(status) {
-		publicStat = status;
+		if (status === "open")
+			publicStat = status;
 	});
 	if (dockerStat.length === 0) dockerStat = "docker not installed :p";
 
 	if ((dockerStat).includes("(healthy)") !== lastDockerStatus.includes("(healthy)")
 		|| ((tunnelStat).trim().length <= 3 !== (lastTunnelStatus.trim().length <= 3))
-		|| ((publicStat).includes("open") !== (lastPublicStatus.includes("open")))
+		|| ((publicStat).includes("closed") !== (lastPublicStatus.includes("closed")))
 		|| lastDockerStatus.includes("start"))
 	{
 		// determine up/down
@@ -321,14 +327,35 @@ setInterval(async () => {
 		let tunnelUp = (tunnelStat).trim().length > 3;
 		let publicUp = (publicStat).includes("open");
 
+		/*
+                1 = down
+                0 = up
+               -1 = possible down
+                 */
 		let assessment = (dockerUp && tunnelUp) ? (publicUp ? "0" : "-1") : "1";
+
+		// #up, #down, #consec_up
+		let uptimeData = fs.readFileSync(uptimeLocation).toString().split(',');
+		let up = parseInt(uptimeData[0]);
+		let down = parseInt(uptimeData[1]);
+		let consec_up = parseInt(uptimeData[2]);
+		if (assessment === "0") {
+			up++;
+			consec_up++;
+		} else {
+			down++;
+			consec_up = 0;
+		}
+		fs.writeFileSync(uptimeLocation, up + ',' + down + ',' + consec_up);
+		let percent_up = (Math.round(up / (up + down) * 10000)/100).toString() + '%';
+		let uptime = consec_up.toString() + ' min'
 
 		if (assessment === "-1") {
 			concurrentPossibleDowns++;
-			
+
 			if (concurrentPossibleDowns >= 5) {
 				// send report if we have several possibly down statuses in a row
-				uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
+				uptimeReport(dockerStat, tunnelStat, publicStat, assessment, percent_up, uptime).then(() => {
 					lastDockerStatus = dockerStat;
 					lastTunnelStatus = tunnelStat;
 					lastPublicStatus = publicStat;
@@ -336,9 +363,9 @@ setInterval(async () => {
 			}
 		} else {
 			concurrentPossibleDowns = 0;
-			
+
 			// send report
-			uptimeReport(dockerStat, tunnelStat, publicStat, assessment).then(() => {
+			uptimeReport(dockerStat, tunnelStat, publicStat, assessment, percent_up, uptime).then(() => {
 				lastDockerStatus = dockerStat;
 				lastTunnelStatus = tunnelStat;
 				lastPublicStatus = publicStat;
