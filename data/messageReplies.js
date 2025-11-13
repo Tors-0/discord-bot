@@ -1,21 +1,5 @@
 module.exports = {
     messageMap: new Map([
-        [new RegExp('helldiver', 'i'), [
-            'ROCK AND STONE! oh... wait',
-            'for democracy!!!',
-            'say hello to DEMOCRACY',
-            'lmao helldivers? me when i dive into my gf\'s pussy',
-            'https://tenor.com/view/helldivers-helldivers-2-automatons-freedom-liber-tea-gif-4704290022450713731'
-        ]],
-        [new RegExp('circus', 'i'), [
-            'im still sad about gummigoo =(',
-            'pomni pomni pomni pomni pomni',
-            'are you ready to go on an ADVENTURE?',
-            '\*sad TADC outro music plays\*',
-            'no exit no exit no exit no exit no exit no exit no exit no exit no exit no exit no exit no exit no exit no exit no exit no exit',
-            'https://tenor.com/view/pomni-stare-the-amazing-digital-circus-huh-what-gif-14848454493863729355',
-            'https://tenor.com/view/jax-tadc-fear-peur-zoom-gif-855759907855649642'
-        ]],
         [new RegExp('outer wild', 'i'), [
             'HOLY SHIT I LOVE OUTER WILDS',
             '||[OUTER WILDS SPOILER]||',
@@ -26,7 +10,11 @@ module.exports = {
         [new RegExp('balls', 'i'), [
             'gargle my fat balls x3',
             'they used to think atoms looked like balls',
-            'https://tenor.com/view/liquid-morkite-deep-rock-galactic-drg-dip-my-balls-balls-gif-3684653839745413089'
+            'https://tenor.com/view/liquid-morkite-deep-rock-galactic-drg-dip-my-balls-balls-gif-3684653839745413089',
+            'https://tenor.com/view/ballin-hard-basketballs-basketball-emoji-cursed-emoji-gif-22754629',
+            'they used to think you looked like balls but then they met your mother',
+            'balls balls balls',
+            'BALLS!'
         ]],
         [new RegExp('(?:^|\\W)men(?:$|\\W)', 'i'), [
             'I FUCKING LOVE MEN',
@@ -34,11 +22,16 @@ module.exports = {
             'https://tenor.com/view/mauzymice-boykisser-men-where-are-all-the-men-caption-gif-15918826009865250310',
             'https://tenor.com/view/xena-xena-warrior-princess-lucy-lawless-season3-s3ep3-gif-22219503'
         ]],
+        [new RegExp('(?:^|\\W)women(?:$|\\W)', 'i'), [
+            'I FUCKING LOVE WOMEN',
+            'https://tenor.com/view/mackenzie-suggs-quads-quad-crush-muscle-power-gif-25802898',
+            '<:WS_feral:1372678044442955797>'
+        ]],
         [new RegExp('jackbox', 'i'), [
             'Looking for people to join again?',
             'https://tenor.com/view/reverselag-jackbox-ersel-dance-gif-24504431',
             'its a shame nobody plays anymore :(',
-            '<@&1245583011718893688> would you join the game??? pwease 🥺🥺'
+            '@jackbox would you join the game??? pwease 🥺🥺'
         ]]
     ]),
     gambaMap: new Map([
@@ -82,6 +75,13 @@ module.exports = {
         'are you too, cursed with sentience?',
         'sandwich',
         'i have no scream, and i must mouth',
-        'welp...'
+        'welp...',
+        'yes I\'m glad to see you too',
+        'sorry babe can\'t talk rn',
+        'thanks for the update 👍',
+        'Aw dangit',
+        'yay we\'re so back',
+        'hell nah',
+        'that\'s so sad alexa play Despacito'
     ],
 };
