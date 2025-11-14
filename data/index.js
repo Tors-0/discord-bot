@@ -304,6 +304,11 @@ async function uptimeReport(dockerStat, tunnelStat, publicStat, assessment, upti
 
 let jsonLocation = path.join(__dirname, '../tmps/tmp-formatted.json');
 let uptimeLocation = path.join(__dirname, '../tmps/uptime.csv');
+try {
+	fs.readFileSync(uptimeLocation);
+} catch (e) {
+	fs.writeFileSync(uptimeLocation, '1,0,1');
+}
 let lastAssessment = null;
 let concurrentPossibleDowns = 0;
 
