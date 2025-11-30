@@ -5,7 +5,7 @@ const portscanner = require('portscanner');
 const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink,
 	ChannelManager, ForumChannel, ThreadChannel
 } = require('discord.js');
-const { token, vipChannelId, reactionsChannelId, statusChannelId } = require('./config.json');
+const { token, vipChannelId, reactionsChannelId, statusChannelId, guildId } = require('./config.json');
 const { messageMap, gambaMap, awawaMap, statusMessages } = require("./messageReplies");
 const {data} = require("./commands/utility/ping");
 
@@ -144,7 +144,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 		canVIP = false;
 	}
 
-	if ('smash' === reaction.emoji.name || 'mepls' === reaction.emoji.name || 'pass' === reaction.emoji.name || 'minorjumpscare' === reaction.emoji.name) {
+	if (('smash' === reaction.emoji.name || 'mepls' === reaction.emoji.name || 'pass' === reaction.emoji.name) && 'minorjumpscare' !== reaction.emoji.name) {
 		if (reaction.count >= 5) {
 			let message = reaction.message;
 			const embed = new EmbedBuilder()
@@ -311,6 +311,28 @@ try {
 }
 let lastAssessment = null;
 let concurrentPossibleDowns = 0;
+
+function guildSuccess(guild) {
+	setInterval(async () => {
+		let random;
+		if (guild) {
+			guild.channels.cache.values().forEach(function(channel)  {
+				if (channel) {
+					random = Math.random() * 86400;
+					if (random <= 1) {
+						try {
+							channel.send('https://tenor.com/view/elephant-green-screen-effect-gif-5821643841100436074')
+						} catch (e) {
+							console.error(e);
+						}
+					}
+				}
+			});
+		}
+	}, 1000);
+}
+client.guilds.fetch(guildId).then(guildSuccess);
+
 
 setInterval(async () => {
 	let jsonData = JSON.parse(fs.readFileSync(jsonLocation, 'utf8'));
