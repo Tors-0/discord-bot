@@ -318,7 +318,7 @@ function guildSuccess(guild) {
 		if (guild) {
 			guild.channels.cache.values().forEach(function(channel)  {
 				if (channel) {
-					random = Math.random() * 86400;
+					random = Math.random() * 3456000;
 					if (random <= 1) {
 						try {
 							channel.send('https://tenor.com/view/elephant-green-screen-effect-gif-5821643841100436074')
