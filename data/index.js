@@ -5,7 +5,7 @@ const portscanner = require('portscanner');
 const { ActivityType, Client, Collection, EmbedBuilder, Events, GatewayIntentBits, Partials, messageLink,
 	ChannelManager, ForumChannel, ThreadChannel
 } = require('discord.js');
-const { token, vipChannelId, reactionsChannelId, statusChannelId, guildId } = require('./config.json');
+const { token, vipChannelId, reactionsChannelId, statusChannelId, guildId, validChannelIds } = require('./config.json');
 const { messageMap, gambaMap, awawaMap, statusMessages } = require("./messageReplies");
 const {data} = require("./commands/utility/ping");
 
@@ -60,6 +60,13 @@ function randomInList(array) {
 
 // occasionally send custom responses to messages containing keywords
 client.on('messageCreate', async message => {
+	// check if channel is valid
+	let valid = false;
+	for (let id in validChannelIds) {
+		if (message.channelId === id) valid = true;
+	}
+	if (valid === false) return;
+
 	// stop the infinite loop
 	if (message.author.bot) return;
 	if (message.content.includes('<@1240360093296361493>')) {
